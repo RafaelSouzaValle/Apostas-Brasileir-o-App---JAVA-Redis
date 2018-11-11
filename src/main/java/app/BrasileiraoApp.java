@@ -24,12 +24,9 @@ public class BrasileiraoApp {
 				"00000-000");
 		usuario.setEndereco(endereco);
 		usuario.setPontuacao(0);
-
-		// Cria uma aposta num campeonato
-		Campeonato c1 = new Campeonato();
-
-		// Executa aposta
-		c1.executaCampeonato();
+		
+		// Cria a aposta para o usuário
+		usuario.executaAposta();
 
 		// Cria um campeonato
 		Campeonato campeonato = new Campeonato();
@@ -38,7 +35,7 @@ public class BrasileiraoApp {
 		campeonato.executaCampeonato();
 
 		// Atribui pontuação ao usuário
-		usuario.setPontuacao(Aposta.calculaPontuacao(campeonato, c1));
+		usuario.setPontuacao(Aposta.calculaPontuacao(campeonato, usuario.getAposta().getCampeonatoApostado()));
 
 		// Salva usuário
 		JedisManager.salvaUsuario(usuario);
@@ -49,7 +46,7 @@ public class BrasileiraoApp {
 		// Carrega usuário salvo no banco de dados
 		System.out.println(JedisManager.carregaUsuarioSalvo("apelido1"));
 		
-		// imprime o campeonato apostado pelo usuário
+		// imprime o campeonato apostado pelo usuário à partir da instância
 //		System.out.println("Resultados apostados:");
 //		c1.imprimeCampeonato();
 
