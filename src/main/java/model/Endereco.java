@@ -27,6 +27,12 @@ public class Endereco {
 		this.codigoPostal = codigoPostal;
 	}
 	
+	public Endereco(String pais, String estado, String cidade) {
+		this.pais = pais;
+		this.estado = estado;
+		this.cidade = cidade;
+	}
+	
 	public String getPais() {
 		return pais;
 	}
@@ -66,7 +72,6 @@ public class Endereco {
 	
 	@Override
 	public String toString() {
-		return "Endereço: " + rua + ", " + complemento + ", " + cidade
-				+ "-" + estado + " - " + pais + " | CEP: " + codigoPostal;
+		return pais + ", " + estado + ", " + cidade + ", " + rua + ", " + complemento + ", " + codigoPostal;
 	}
 }
