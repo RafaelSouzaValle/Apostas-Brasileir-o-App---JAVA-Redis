@@ -9,6 +9,24 @@ public class Endereco {
 	private String complemento;
 	private String codigoPostal;
 	
+	
+	/**
+	 * @param pais
+	 * @param estado
+	 * @param cidade
+	 * @param rua
+	 * @param complemento
+	 * @param codigoPostal
+	 */
+	public Endereco(String pais, String estado, String cidade, String rua, String complemento, String codigoPostal) {
+		this.pais = pais;
+		this.estado = estado;
+		this.cidade = cidade;
+		this.rua = rua;
+		this.complemento = complemento;
+		this.codigoPostal = codigoPostal;
+	}
+	
 	public String getPais() {
 		return pais;
 	}
