@@ -1,12 +1,12 @@
 package model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Usuario {
 
 	private String apelido;
 	private String nome;
-	private Date nascimento;
+	private LocalDate nascimento;
 	private Genero genero;
 	private Endereco endereco;
 	private Integer pontuacao;
@@ -22,6 +22,10 @@ public class Usuario {
 		this.nome = nome;
 	}
 	
+	public Usuario() {
+		
+	}
+	
 	public String getApelido() {
 		return apelido;
 	}
@@ -34,10 +38,10 @@ public class Usuario {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Date getNascimento() {
+	public LocalDate getNascimento() {
 		return nascimento;
 	}
-	public void setNascimento(Date nascimento) {
+	public void setNascimento(LocalDate nascimento) {
 		this.nascimento = nascimento;
 	}
 	public Genero getGenero() {
@@ -62,7 +66,12 @@ public class Usuario {
 	
 	@Override
 	public String toString() {
-		return "Jogador: " + " | Nome: " + nome  + " | Nascimento: " + nascimento
-				+ " | Gênero: " + genero.toString()  + " | " + endereco.toString()  + " | Pontuação: " + pontuacao;
+		
+		return "Jogador: " + apelido + " \n"
+				+ "Nome: " + nome
+				+ "\nNascimento: " + nascimento.getDayOfMonth() + "/" + nascimento.getDayOfMonth() + "/" + nascimento.getYear() 
+				+ "\nGênero: " + genero.toString()
+				+ "\nEndereço: " + endereco.toString()
+				+ "\nPontuação: " + pontuacao;
 	}
 }
