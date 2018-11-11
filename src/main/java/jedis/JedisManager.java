@@ -1,9 +1,14 @@
 package jedis;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import model.Campeonato;
+import model.Endereco;
+import model.Genero;
 import model.Partida;
 import model.Rodada;
 import model.Usuario;
@@ -116,7 +121,7 @@ public class JedisManager {
 	}
 
 	public static void salvaUsuario(Usuario usuario) {
-
+		
 		String apelido = usuario.getApelido();
 
 		jedis.rpush(apelido, usuario.getApelido());
@@ -128,16 +133,54 @@ public class JedisManager {
 
 	}
 
+	// Carrega dados salvos de usuário salvo no server
+	// e retornam uma instância de Usuario
 	public static Usuario carregaUsuarioSalvo(String apelido) {
-
+		// Lista recebe dados do server em formato String,
+		// usando o argumento do parâmetro como chave
 		List<String> dadosUsuario = jedis.lrange(apelido, 0, 5);
 		
-		for (String string : dadosUsuario) {
-			System.out.println();
-		}
+		// Instancia usuário que receberá as informações da lista
+		Usuario usuario = new Usuario();
 		
-		return null;
-
+		/*
+		 * Atribuição de cada item da lista para cada atributo do usuário criado
+		 */
+		
+		// Atribuição do apelido
+		usuario.setApelido(dadosUsuario.get(0));
+		
+		// Atribuição do nome
+		usuario.setNome(dadosUsuario.get(1));
+		
+		// Atribuição da data de nascimento
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Define formato da data
+		String[] numData = dadosUsuario.get(2).split("-"); // Array de String que recebe cada parte da data (dia, mês e ano)
+		LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Instância de LocalDate que recebe os dados do Array
+		usuario.setNascimento(d); //Atribui o LocalDate criado ao usuário
+		
+		// Atribuição do gênero
+		usuario.setGenero(Genero.valueOf(dadosUsuario.get(3)));
+		
+		// Atribuição do endereço
+		String[] dadosEndereco = dadosUsuario.get(4).split(", ");
+		Endereco endereco = new Endereco(
+				dadosEndereco[0],
+				dadosEndereco[1],
+				dadosEndereco[2],
+				dadosEndereco[3],
+				dadosEndereco[4],
+				dadosEndereco[5]);
+		usuario.setEndereco(endereco);
+		
+		// Atribuição da pontuação
+		usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
+		
+//		for (String string : dadosUsuario) {
+//			System.out.println(string + "*");
+//		}
+		
+		return usuario;
 	}
 
 }
