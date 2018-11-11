@@ -10,6 +10,7 @@ public class Usuario {
 	private Genero genero;
 	private Endereco endereco;
 	private Integer pontuacao;
+	private Aposta aposta;
 	
 	
 	
@@ -74,4 +75,23 @@ public class Usuario {
 				+ "\nEndereço: " + endereco.toString()
 				+ "\nPontuação: " + pontuacao;
 	}
+	
+	public Aposta getAposta() {
+		return aposta;
+	}
+
+	public void setAposta(Aposta aposta) {
+		this.aposta = aposta;
+	}
+	
+	// Cria a aposta do usuário
+	public void executaAposta() {
+		Aposta aposta = new Aposta();
+		
+		aposta.criaAposta();
+		
+		setAposta(aposta);
+	}
+
+	
 }
