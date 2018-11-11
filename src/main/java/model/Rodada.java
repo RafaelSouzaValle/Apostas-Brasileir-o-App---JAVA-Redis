@@ -77,7 +77,4 @@ public class Rodada {
 	public static int getQuantidadePartidas() {
 		return QUANTIDADE_PARTIDAS;
 	}
-	
-	
-
 }
