@@ -10,8 +10,8 @@ public class Aposta {
 	// Recebe a instância de uma campeonato
 	private Campeonato campeonatoApostado;
 
-	// Cria um campeonato sorteando jogos e resultados para cada rodada
-	public Campeonato criaCampeonato() {
+	// Sorteia times e resultados dos jogos de uma aposta
+	public Campeonato criaAposta() {
 
 		campeonatoApostado = new Campeonato();
 
@@ -56,10 +56,6 @@ public class Aposta {
 
 	public int getPontuacao() {
 		return pontuacao;
-	}
-
-	public void setPontuacao(int pontuacao) {
-		this.pontuacao = pontuacao;
 	}
 
 	public Campeonato getCampeonatoApostado() {
