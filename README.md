@@ -1,4 +1,4 @@
-# Apostas-Brasileirãoo-App - Java com banco de dados Redis
+# Apostas-Brasileirão-App - Java com banco de dados Redis
 
 ## Aplicação que simula um sistema de apostas, baseado no campeonato Brasileiro.
 
