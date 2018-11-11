@@ -13,6 +13,15 @@ public class Usuario {
 	
 	
 	
+	/**
+	 * @param apelido
+	 * @param nome
+	 */
+	public Usuario(String apelido, String nome) {
+		this.apelido = apelido;
+		this.nome = nome;
+	}
+	
 	public String getApelido() {
 		return apelido;
 	}
