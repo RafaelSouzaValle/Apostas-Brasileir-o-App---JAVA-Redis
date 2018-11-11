@@ -3,7 +3,6 @@ package jedis;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import model.Campeonato;
@@ -175,10 +174,6 @@ public class JedisManager {
 		
 		// Atribuição da pontuação
 		usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
-		
-//		for (String string : dadosUsuario) {
-//			System.out.println(string + "*");
-//		}
 		
 		return usuario;
 	}
