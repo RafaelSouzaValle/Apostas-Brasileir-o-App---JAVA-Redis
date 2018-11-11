@@ -1,7 +1,8 @@
 package app;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import jedis.JedisManager;
 import model.Aposta;
@@ -14,46 +15,50 @@ public class BrasileiraoApp {
 
 	public static void main(String[] args) throws ParseException {
 
-		//Cria um usuario
+		// Cria um usuario
 		Usuario usuario = new Usuario("apelido1", "nome1");
-		String nascimento = "10/10/1986";
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		usuario.setNascimento(sdf.parse(nascimento));
+		LocalDate d = LocalDate.parse("10/10/1986", DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+		usuario.setNascimento(d);
 		usuario.setGenero(Genero.Masculino);
-		Endereco endereco = new Endereco("Brasil", "RJ", "Rio de Janeiro", "Rua qualquer" , "complem. nenhum" , "00000-000");
+		Endereco endereco = new Endereco("Brasil", "RJ", "Rio de Janeiro", "Rua qualquer", "complem. nenhum",
+				"00000-000");
 		usuario.setEndereco(endereco);
 		usuario.setPontuacao(0);
-		
-		//Salva usuário
-		JedisManager.salvaUsuario(usuario);
-		
-		//Cria uma aposta num campeonato
+
+		// Cria uma aposta num campeonato
 		Campeonato c1 = new Campeonato();
-		
-		//Executa aposta
+
+		// Executa aposta
 		c1.executaCampeonato();
-		
-		//Cria um campeonato
+
+		// Cria um campeonato
 		Campeonato campeonato = new Campeonato();
 
-		//Executa o campeonato
+		// Executa o campeonato
 		campeonato.executaCampeonato();
-		
-		//Atribui pontuação ao usuário
+
+		// Atribui pontuação ao usuário
 		usuario.setPontuacao(Aposta.calculaPontuacao(campeonato, c1));
+
+		// Salva usuário
+		JedisManager.salvaUsuario(usuario);
+
+		// imprime objeto usuário com pontuação
+//		System.out.println(usuario.toString());
+
+		// Carrega usuário salvo no banco de dados
+		System.out.println(JedisManager.carregaUsuarioSalvo("apelido1"));
 		
-		//imprime usuário com pontuação
-		System.out.println(usuario.toString());
-		
-		//imprime o campeonato
+		// imprime o campeonato apostado pelo usuário
+//		System.out.println("Resultados apostados:");
 //		c1.imprimeCampeonato();
-		
-		//Salva o campeonato principal no banco de dados
+
+		// Salva o campeonato principal no banco de dados
 		JedisManager.salvaCampeonato(campeonato);
-		
-		//Recupera o campeonato salvo no Banco e o imprime
+
+		// Recupera o campeonato salvo no Banco e o imprime
+		System.out.println("Resultados do Campeonato:");
 		JedisManager.carregaCampeonatoSalvo().imprimeCampeonato();
-		
 	}
 
 }
