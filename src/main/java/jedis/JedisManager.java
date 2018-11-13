@@ -131,10 +131,10 @@ public class JedisManager {
 		List<String> dadosUsuario = jedis.lrange(apelido, 0, 0);
 
 		if (dadosUsuario.isEmpty()) {
-			System.out.println("apelido " + apelido + " dispon√≠vel");
+			System.out.println("apelido " + apelido + " n„o existe");
 			disponivel = true;
 		} else {
-			System.out.println("apelido " + apelido + " j√° existe");
+			System.out.println("apelido " + apelido + " j· encontrado");
 			disponivel = false;
 		}
 
@@ -161,14 +161,20 @@ public class JedisManager {
 	
 	// Carrega a lista de usuarios salvos
 	public static void carregarListaUsuarios () {
-		List<String> listaUsuarios = jedis.lrange("listaUsuarios", 0, 10);
+		List<String> listaUsuarios = jedis.lrange("listaUsuarios", 0, 380);
 		
 		Collections.sort(listaUsuarios);
 		
+		String usuario = null;
+		String pontuacao = null;
+		
 		for (String string : listaUsuarios) {
 			String[] strArray = string.split(" ");
-			System.out.println("Usu√°rio: " + strArray[0] + " | Pontua√ß√£o: " + strArray[1]);
+			usuario = strArray[0];
+			pontuacao = strArray[1];
 		}
+		
+		System.out.println("Usu√°rio: " + usuario + " | Pontua√ß√£o: " + pontuacao);
 	}
 	
 	// Apaga usu√°rio do Banco de dados com base no apelido inserido
@@ -204,20 +210,20 @@ public class JedisManager {
 			LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Inst√¢ncia de LocalDate
 																									// que recebe os dados
 																									// do Array
-			usuario.setNascimento(d); // Atribui o LocalDate criado ao usu√°rio
-			// Atribui√ß√£o do g√™nero
+			usuario.setNascimento(d); // Atribui o LocalDate criado ao usu·rio
+			// Atribui√AtribuiÁ„o√£o do GÍnero
 			usuario.setGenero(Genero.valueOf(dadosUsuario.get(3)));
 
-			// Atribui√ß√£o do endere√ßo
+			// AtribuiÁ„oß√£o do endereÁo
 			String[] dadosEndereco = dadosUsuario.get(4).split(", ");
 			Endereco endereco = new Endereco(dadosEndereco[0], dadosEndereco[1], dadosEndereco[2], dadosEndereco[3],
 					dadosEndereco[4], dadosEndereco[5]);
 			usuario.setEndereco(endereco);
 
-			// Atribui√ß√£o da pontua√ß√£o
+			// AtribuiÁ„o da pontuaÁ„o
 			usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
 		} else {
-			System.out.println("Usu√°rio inexistente.");
+			System.out.println("Usu·rio inexistente.");
 		}
 		
 
