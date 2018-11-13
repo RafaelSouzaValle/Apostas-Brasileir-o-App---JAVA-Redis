@@ -3,15 +3,17 @@ package jedis;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import model.Campeonato;
-import model.Endereco;
-import model.Genero;
-import model.Partida;
-import model.Rodada;
-import model.Usuario;
+import campeonato.Campeonato;
+import campeonato.Partida;
+import campeonato.Rodada;
 import redis.clients.jedis.Jedis;
+import usuario.Endereco;
+import usuario.Genero;
+import usuario.Usuario;
 
 public class JedisManager {
 
@@ -26,7 +28,7 @@ public class JedisManager {
 	public static void salvaCampeonato(Campeonato campeonato) {
 
 		// Remove os registros do campeonato anterior do Banco de Dados
-		jedis.flushDB();
+//		jedis.flushDB();
 
 		// Recebe a lista de rodadas do campeonato passado como argumento
 		List<Rodada> rodadas = campeonato.getRodadas();
@@ -119,8 +121,29 @@ public class JedisManager {
 		return campeonato;
 	}
 
+	// Verifica se já existe o apelido no banco de dados
+	public static Boolean verificaApelidoDisponivel(String apelido) {
+
+		boolean disponivel = true;
+
+		// Lista recebe dados do server em formato String,
+		// usando o argumento do parâmetro como chave
+		List<String> dadosUsuario = jedis.lrange(apelido, 0, 0);
+
+		if (dadosUsuario.isEmpty()) {
+			System.out.println("apelido " + apelido + " disponível");
+			disponivel = true;
+		} else {
+			System.out.println("apelido " + apelido + " já existe");
+			disponivel = false;
+		}
+
+		return disponivel;
+	}
+
+	//Salva usuário no banco de dados
 	public static void salvaUsuario(Usuario usuario) {
-		
+
 		String apelido = usuario.getApelido();
 
 		jedis.rpush(apelido, usuario.getApelido());
@@ -128,8 +151,24 @@ public class JedisManager {
 		jedis.rpush(apelido, usuario.getNascimento().toString());
 		jedis.rpush(apelido, usuario.getGenero().toString());
 		jedis.rpush(apelido, usuario.getEndereco().toString());
-		jedis.rpush(apelido, usuario.getPontuacao().toString());
-
+		if (usuario.getPontuacao() != null) {
+			jedis.rpush(apelido, usuario.getPontuacao().toString());
+		}
+		
+		String idRanking = usuario.getApelido() + " " + usuario.getPontuacao();
+		jedis.rpush("listaUsuarios", idRanking);
+	}
+	
+	// Carrega a lista de usuarios salvos
+	public static void carregarListaUsuarios () {
+		List<String> listaUsuarios = jedis.lrange("listaUsuarios", 0, 10);
+		
+		Collections.sort(listaUsuarios);
+		
+		for (String string : listaUsuarios) {
+			String[] strArray = string.split(" ");
+			System.out.println("Usuário: " + strArray[0] + " | Pontuação: " + strArray[1]);
+		}
 	}
 
 	// Carrega dados salvos de usuário salvo no server
@@ -138,43 +177,45 @@ public class JedisManager {
 		// Lista recebe dados do server em formato String,
 		// usando o argumento do parâmetro como chave
 		List<String> dadosUsuario = jedis.lrange(apelido, 0, 5);
-		
+
 		// Instancia usuário que receberá as informações da lista
 		Usuario usuario = new Usuario();
-		
+
 		/*
 		 * Atribuição de cada item da lista para cada atributo do usuário criado
 		 */
-		
+
 		// Atribuição do apelido
-		usuario.setApelido(dadosUsuario.get(0));
+		if(!dadosUsuario.isEmpty()) {
+			usuario.setApelido(dadosUsuario.get(0));
+
+			// Atribuição do nome
+			usuario.setNome(dadosUsuario.get(1));
+
+			// Atribuição da data de nascimento
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Define formato da data
+			String[] numData = dadosUsuario.get(2).split("-"); // Array de String que recebe cada parte da data (dia, mês e
+																// ano)
+			LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Instância de LocalDate
+																									// que recebe os dados
+																									// do Array
+			usuario.setNascimento(d); // Atribui o LocalDate criado ao usuário
+			// Atribuição do gênero
+			usuario.setGenero(Genero.valueOf(dadosUsuario.get(3)));
+
+			// Atribuição do endereço
+			String[] dadosEndereco = dadosUsuario.get(4).split(", ");
+			Endereco endereco = new Endereco(dadosEndereco[0], dadosEndereco[1], dadosEndereco[2], dadosEndereco[3],
+					dadosEndereco[4], dadosEndereco[5]);
+			usuario.setEndereco(endereco);
+
+			// Atribuição da pontuação
+			usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
+		} else {
+			System.out.println("Usuário inexistente.");
+		}
 		
-		// Atribuição do nome
-		usuario.setNome(dadosUsuario.get(1));
-		
-		// Atribuição da data de nascimento
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Define formato da data
-		String[] numData = dadosUsuario.get(2).split("-"); // Array de String que recebe cada parte da data (dia, mês e ano)
-		LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Instância de LocalDate que recebe os dados do Array
-		usuario.setNascimento(d); //Atribui o LocalDate criado ao usuário
-		
-		// Atribuição do gênero
-		usuario.setGenero(Genero.valueOf(dadosUsuario.get(3)));
-		
-		// Atribuição do endereço
-		String[] dadosEndereco = dadosUsuario.get(4).split(", ");
-		Endereco endereco = new Endereco(
-				dadosEndereco[0],
-				dadosEndereco[1],
-				dadosEndereco[2],
-				dadosEndereco[3],
-				dadosEndereco[4],
-				dadosEndereco[5]);
-		usuario.setEndereco(endereco);
-		
-		// Atribuição da pontuação
-		usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
-		
+
 		return usuario;
 	}
 
