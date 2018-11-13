@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
+import app.Aplicacao;
 import campeonato.Campeonato;
 import exception.BrasileiraoException;
 import jedis.JedisManager;
@@ -27,7 +28,7 @@ public class Aplicacao {
 
 				switch (opcao) {
 				case Menu.CADASTRO_USUARIO:
-					System.out.println("Inserir usu·rio");
+					System.out.println("Inserir usu√°rio");
 					inserirUsuario();
 					break;
 				case Menu.APOSTA:
@@ -59,7 +60,7 @@ public class Aplicacao {
 		LocalDate d = LocalDate.parse(dataNascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		usuario.setNascimento(d);
 
-		System.out.print("Digite o gÍnero: M ou F");
+		System.out.print("Digite o g√™nero: M ou F");
 		String inputGenero = Console.readString().toUpperCase();
 
 		if (inputGenero.equals("M")) {
@@ -71,8 +72,8 @@ public class Aplicacao {
 		}
 
 		Endereco endereco = new Endereco();
-		System.out.print("DIGITE ENDERE«O: ");
-		System.out.print("Insira o paÌs: ");
+		System.out.print("DIGITE ENDERE√áO: ");
+		System.out.print("Insira o pa√≠s: ");
 		endereco.setPais(Console.readString());
 		System.out.print("Insira o estado: ");
 		endereco.setEstado(Console.readString());
@@ -82,7 +83,7 @@ public class Aplicacao {
 		endereco.setRua(Console.readString());
 		System.out.print("Insira o complemento: ");
 		endereco.setComplemento(Console.readString());
-		System.out.print("Insira o CÛdigo Postal: ");
+		System.out.print("Insira o C√≥digo Postal: ");
 		endereco.setCodigoPostal(Console.readString());
 
 		usuario.setEndereco(endereco);
@@ -96,20 +97,28 @@ public class Aplicacao {
 	}
 
 	private static void fazerAposta() throws BrasileiraoException {
-		//Buscar usu·rio do bando de dados pelo apelido e retorna o usu·rio como objeto
-		System.out.println("Digite o apelido do usu·rio que far· a aposta: ");
+		//Buscar usu√°rio do bando de dados pelo apelido e retorna o usu√°rio como objeto
+		System.out.println("Digite o apelido do usu√°rio que far√° a aposta: ");
 		String apelido = Console.readString();
-		Usuario usuario = JedisManager.carregaUsuarioSalvo(apelido);
 		
-		//Cria o campeonato principal e salva no Redis
-		Campeonato campeonato = new Campeonato();
-		campeonato.executaCampeonato();
-		JedisManager.salvaCampeonato(campeonato);
+		if(!(verificaApelidoDisponivel(String apelido))){
+			
+			Usuario usuario = JedisManager.carregaUsuarioSalvo(apelido);
 		
-		//Executa a aposta do usu·rio
-		Aposta aposta = new Aposta();
-		aposta.criaCampeonatoDaAposta(apelido, campeonato);
-		usuario.setPontuacao(aposta.getPontuacao());
+			//Cria o campeonato principal e salva no Redis
+			Campeonato campeonato = new Campeonato();
+			campeonato.executaCampeonato();
+			JedisManager.salvaCampeonato(campeonato);
+		
+			//Executa a aposta do usu√°rio
+			Aposta aposta = new Aposta();
+			aposta.criaCampeonatoDaAposta(apelido, campeonato);
+			usuario.setPontuacao(aposta.getPontuacao());
+		} else {
+			System.out.println("Usu√°rio n√£o encontrado. Voltando ao menu inicial");
+			Aplicacao.iniciar;
+		}
+		
 	}
 	
 	private static void exibirRanking() {
