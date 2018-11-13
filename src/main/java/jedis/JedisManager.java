@@ -34,14 +34,14 @@ public class JedisManager {
 		List<Rodada> rodadas = campeonato.getRodadas();
 
 		int numRodada = 0;
-		// LÍ as rodadas do campeonato
+		// L√™ as rodadas do campeonato
 		for (Rodada rodada : rodadas) {
 
 			// Recebe a lista de partidas da rodada atual
 			List<Partida> partidas = rodada.getPartidas();
 
 			int numPartida = 0;
-			// LÍ as partidas da rodada atual
+			// L√™ as partidas da rodada atual
 			for (Partida partida : partidas) {
 
 				// Recebe resulrado das partidas atuais
@@ -60,18 +60,18 @@ public class JedisManager {
 	}
 
 	// Carrega os dados armazenados no Banco de Dados e
-	// retorna uma insta‚ncia de Campeonato com contendo as informaÁıes
+	// retorna uma insta√¢ncia de Campeonato com contendo as informa√ß√µes
 	public static Campeonato carregaCampeonatoSalvo() {
-		// Cria uma inst‚ncia de Campeonato para receber
-		// as informaÁıes extraÌdas do BD
+		// Cria uma inst√¢ncia de Campeonato para receber
+		// as informa√ß√µes extra√≠das do BD
 		Campeonato campeonato = new Campeonato();
 
-		// LÍ as rodadas do campeonato
+		// L√™ as rodadas do campeonato
 		for (int i = 0; i < Campeonato.getQuantidadeRodadas(); i++) {
 
 			Rodada rodada = new Rodada();
 
-			// LÍ as partidas da rodada atual
+			// L√™ as partidas da rodada atual
 			for (int j = 0; j < Rodada.getQuantidadePartidas(); j++) {
 				String chave = i + "" + j;
 
@@ -85,7 +85,7 @@ public class JedisManager {
 				// atribui cada um atributo de uma nova partida
 				for (String stringPartida : listaDados) {
 
-					// Array de Strings que recebe em cada Ìndice
+					// Array de Strings que recebe em cada √≠ndice
 					// uma parte de um String retornado
 					String[] arrayPartida = stringPartida.split(", ");
 
@@ -121,27 +121,27 @@ public class JedisManager {
 		return campeonato;
 	}
 
-	// Verifica se j· existe o apelido no banco de dados
+	// Verifica se j√° existe o apelido no banco de dados
 	public static Boolean verificaApelidoDisponivel(String apelido) {
 
 		boolean disponivel = true;
 
 		// Lista recebe dados do server em formato String,
-		// usando o argumento do par‚metro como chave
+		// usando o argumento do par√¢metro como chave
 		List<String> dadosUsuario = jedis.lrange(apelido, 0, 0);
 
 		if (dadosUsuario.isEmpty()) {
-			System.out.println("apelido " + apelido + " disponÌvel");
+			System.out.println("apelido " + apelido + " dispon√≠vel");
 			disponivel = true;
 		} else {
-			System.out.println("apelido " + apelido + " j· existe");
+			System.out.println("apelido " + apelido + " j√° existe");
 			disponivel = false;
 		}
 
 		return disponivel;
 	}
 
-	//Salva usu·rio no banco de dados
+	//Salva usu√°rio no banco de dados
 	public static void salvaUsuario(Usuario usuario) {
 
 		String apelido = usuario.getApelido();
@@ -167,52 +167,57 @@ public class JedisManager {
 		
 		for (String string : listaUsuarios) {
 			String[] strArray = string.split(" ");
-			System.out.println("Usu·rio: " + strArray[0] + " | PontuaÁ„o: " + strArray[1]);
+			System.out.println("Usu√°rio: " + strArray[0] + " | Pontua√ß√£o: " + strArray[1]);
 		}
 	}
-
-	// Carrega dados salvos de usu·rio salvo no server
-	// e retornam uma inst‚ncia de Usuario
+	
+	// Apaga usu√°rio do Banco de dados com base no apelido inserido
+	public void excluirUsuario(String apelido) {
+		jedis.del(apelido)
+	}
+		
+	// Carrega dados salvos de usu√°rio salvo no server
+	// e retornam uma inst√¢ncia de Usuario
 	public static Usuario carregaUsuarioSalvo(String apelido) {
 		// Lista recebe dados do server em formato String,
-		// usando o argumento do par‚metro como chave
+		// usando o argumento do par√¢metro como chave
 		List<String> dadosUsuario = jedis.lrange(apelido, 0, 5);
 
-		// Instancia usu·rio que receber· as informaÁıes da lista
+		// Instancia usu√°rio que receber√° as informa√ß√µes da lista
 		Usuario usuario = new Usuario();
 
 		/*
-		 * AtribuiÁ„o de cada item da lista para cada atributo do usu·rio criado
+		 * Atribui√ß√£o de cada item da lista para cada atributo do usu√°rio criado
 		 */
 
-		// AtribuiÁ„o do apelido
+		// Atribui√ß√£o do apelido
 		if(!dadosUsuario.isEmpty()) {
 			usuario.setApelido(dadosUsuario.get(0));
 
-			// AtribuiÁ„o do nome
+			// Atribui√ß√£o do nome
 			usuario.setNome(dadosUsuario.get(1));
 
-			// AtribuiÁ„o da data de nascimento
+			// Atribui√ß√£o da data de nascimento
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Define formato da data
-			String[] numData = dadosUsuario.get(2).split("-"); // Array de String que recebe cada parte da data (dia, mÍs e
+			String[] numData = dadosUsuario.get(2).split("-"); // Array de String que recebe cada parte da data (dia, m√™s e
 																// ano)
-			LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Inst‚ncia de LocalDate
+			LocalDate d = LocalDate.parse(numData[2] + "/" + numData[1] + "/" + numData[0], dtf); // Inst√¢ncia de LocalDate
 																									// que recebe os dados
 																									// do Array
-			usuario.setNascimento(d); // Atribui o LocalDate criado ao usu·rio
-			// AtribuiÁ„o do gÍnero
+			usuario.setNascimento(d); // Atribui o LocalDate criado ao usu√°rio
+			// Atribui√ß√£o do g√™nero
 			usuario.setGenero(Genero.valueOf(dadosUsuario.get(3)));
 
-			// AtribuiÁ„o do endereÁo
+			// Atribui√ß√£o do endere√ßo
 			String[] dadosEndereco = dadosUsuario.get(4).split(", ");
 			Endereco endereco = new Endereco(dadosEndereco[0], dadosEndereco[1], dadosEndereco[2], dadosEndereco[3],
 					dadosEndereco[4], dadosEndereco[5]);
 			usuario.setEndereco(endereco);
 
-			// AtribuiÁ„o da pontuaÁ„o
+			// Atribui√ß√£o da pontua√ß√£o
 			usuario.setPontuacao(Integer.valueOf(dadosUsuario.get(5)));
 		} else {
-			System.out.println("Usu·rio inexistente.");
+			System.out.println("Usu√°rio inexistente.");
 		}
 		
 
