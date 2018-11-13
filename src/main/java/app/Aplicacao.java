@@ -116,7 +116,7 @@ public class Aplicacao {
 			usuario.setPontuacao(aposta.getPontuacao());
 		} else {
 			System.out.println("Usuário não encontrado. Voltando ao menu inicial");
-			Aplicacao.iniciar;
+			Aplicacao.iniciar();
 		}
 		
 	}
