@@ -101,7 +101,7 @@ public class Aplicacao {
 		System.out.println("Digite o apelido do usuário que fará a aposta: ");
 		String apelido = Console.readString();
 		
-		if(!(verificaApelidoDisponivel(String apelido))){
+		if(!(JedisManager.verificaApelidoDisponivel(apelido))){
 			
 			Usuario usuario = JedisManager.carregaUsuarioSalvo(apelido);
 		

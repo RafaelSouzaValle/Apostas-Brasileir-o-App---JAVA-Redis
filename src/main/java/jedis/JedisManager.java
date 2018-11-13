@@ -172,8 +172,8 @@ public class JedisManager {
 	}
 	
 	// Apaga usuário do Banco de dados com base no apelido inserido
-	public void excluirUsuario(String apelido) {
-		jedis.del(apelido)
+	public static void excluirUsuario(String apelido) {
+		jedis.del(apelido);
 	}
 		
 	// Carrega dados salvos de usuário salvo no server
