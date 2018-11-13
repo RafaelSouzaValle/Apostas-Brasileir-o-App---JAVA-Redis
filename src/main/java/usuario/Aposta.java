@@ -121,7 +121,7 @@ public class Aposta {
 				default:
 					System.out.println("Jogo salvo!");
 					usuario.setPontuacao(pontuacao);
-					JedisManager.excluirUsuario(apelido); // Exclui o usuário que possui pontuação antiga
+					JedisManager.excluirUsuario(apelido); // Exclui o usu�rio que possui pontuação antiga
 					JedisManager.salvaUsuario(usuario); // Salva o usuário com pontuação nova
 
 					System.out.println("Jogo encerrado.");

@@ -2,9 +2,7 @@ package app;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
-import app.Aplicacao;
 import campeonato.Campeonato;
 import exception.BrasileiraoException;
 import jedis.JedisManager;
@@ -28,7 +26,7 @@ public class Aplicacao {
 
 				switch (opcao) {
 				case Menu.CADASTRO_USUARIO:
-					System.out.println("Inserir usu√°rio");
+					System.out.println("Inserir usu·rio");
 					inserirUsuario();
 					break;
 				case Menu.APOSTA:
@@ -60,7 +58,7 @@ public class Aplicacao {
 		LocalDate d = LocalDate.parse(dataNascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 		usuario.setNascimento(d);
 
-		System.out.print("Digite o g√™nero: M ou F");
+		System.out.print("Digite o gÍnero: M ou F");
 		String inputGenero = Console.readString().toUpperCase();
 
 		if (inputGenero.equals("M")) {
@@ -98,7 +96,7 @@ public class Aplicacao {
 
 	private static void fazerAposta() throws BrasileiraoException {
 		//Buscar usu√°rio do bando de dados pelo apelido e retorna o usu√°rio como objeto
-		System.out.println("Digite o apelido do usu√°rio que far√° a aposta: ");
+		System.out.println("Digite o apelido do usu·rio que far· a aposta: ");
 		String apelido = Console.readString();
 		
 		if(!(JedisManager.verificaApelidoDisponivel(apelido))){
@@ -115,7 +113,7 @@ public class Aplicacao {
 			aposta.criaCampeonatoDaAposta(apelido, campeonato);
 			usuario.setPontuacao(aposta.getPontuacao());
 		} else {
-			System.out.println("Usu√°rio n√£o encontrado. Voltando ao menu inicial");
+			System.out.println("Usu·rio n„o encontrado. Voltando ao menu inicial");
 			Aplicacao.iniciar();
 		}
 		
