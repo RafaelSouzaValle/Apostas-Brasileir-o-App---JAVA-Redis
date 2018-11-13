@@ -5,7 +5,7 @@ import java.util.List;
 public class Aposta {
 
 	// Recebe a pontuação total obtida com a aposta
-	private static int pontuacao;
+	private int pontuacao;
 
 	// Recebe a instância de uma campeonato
 	private Campeonato campeonatoApostado;
@@ -22,7 +22,7 @@ public class Aposta {
 
 	// Compara campeonato do Banco de dados com o da aposta
 	// e calcula a pontuação obtida
-	public static int calculaPontuacao(Campeonato campeonato, Campeonato aposta) {
+	public int calculaPontuacao(Campeonato campeonato, Campeonato aposta) {
 
 		// Recebe a lista de rodadas do campeonato passado como argumento
 		List<Rodada> rodadas = campeonato.getRodadas();
